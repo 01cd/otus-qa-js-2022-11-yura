@@ -20,22 +20,6 @@ function kolobok(name) {
     return ss;
 }
 
-//первая функция работает, но мне удобнее так в данном случае:
-/*const actions = {
-"дедушка":"Я от дедушки ушёл",
-"заяц":"",
-"лиса":"Меня съели"
-}
-
-function kolobok(name) {
-	if (actions[name]) {
-    return actions[name];
-	} else {
-		return "incorrect: " + JSON.stringify(name)
-	}
-} */
-
-// по дефолту вылетает с ошибкой: 'tale.js': line: 41, message: SyntaxError: Expected token `;'   --В node 14.21 работает
 function newYear(name) {
   if (name == "Дед Мороз" || name == "Снегурочка") {
     return `"${name}! ${name}! ${name}!"`;
@@ -43,23 +27,6 @@ function newYear(name) {
 	  return "incorrect" ;
 	}  
 }  
-
-// аналог, который работает везде
-/*function newYear(name) {
-  if (name == "Дед Мороз" | name == "Снегурочка") {
-    return string_format(['{2}{1}{3} {1}{3} {1}{3}{2}', name,"\"", "!"]);
-	} else {
-	  return "incorrect: " + JSON.stringify(name);
-	}  
-}
-
-function string_format(array) {
-  var s = array[0];
-  for (var i = 1; i < array.length; i++) {
-    s = s.replace(RegExp("\\{" + i + "\\}","gm"), array[i]);
-  }
-  return s;
-}*/
 
 //данные в тесты
 let test_data=[];
@@ -77,59 +44,64 @@ test_data.push("лиса"); // #9
 test_data.push("Дед Мороз"); // #10
 test_data.push("Снегурочка"); // #11
 
-// зависимости и логи
+// зависимости и логи, уровни логирования: "fatal" (60); "error" (50); "warn" (40); "info"(30); "debug" (20); "trace" (10)
 var bunyan = require('bunyan');
-var log = bunyan.createLogger({
+var PrettyStream = require('bunyan-prettystream');
+var fs = require('fs');
+var prettyStdOut = new PrettyStream();
+var prettyFileOut = new PrettyStream();
+myFile = fs.createWriteStream('/var/log/1test.log');
+prettyStdOut.pipe(process.stdout);
+prettyFileOut.pipe(myFile);
+var log = bunyan.createLogger({   
     name: 'test',
-    streams: [{
-        path: '/var/log/1test.log',
-        level:bunyan.INFO
-    }]
+    streams: [        
+                {
+                    level:bunyan.INFO,
+                    stream: prettyStdOut
+                },
+                {
+                    path: '/var/log/1test.log',
+                    level:bunyan.INFO,
+                    useColor: false,
+                    stream: prettyFileOut
+                }
+            ]
 });
 
-//тест колобка
 function test_kolobok() {
-	//console.log("Возвращаемые функцией kolobok значения:");
-    log.info("Возвращаемые функцией kolobok значения:");
+    log.info("\n Возвращаемые функцией kolobok значения:");
     var c = 0;
 	for (var i = 0; i < test_data.length; i++) {
         c++;
         if ((i==6 && kolobok(test_data[i])==="Я от дедушки ушёл") || (i==7 && kolobok(test_data[i])==="") || (i==8 && kolobok(test_data[i])==="Меня съели")) {
-            log.warn("Тест №"+(i+1)+" из "+test_data.length+" ПРОЙДЕН "+" ("+JSON.stringify(test_data[i])+")"+" > "+kolobok(test_data[i]));
-            //console.log("Тест №"+(i+1)+" из "+test_data.length+" НЕ пройден "+" ("+JSON.stringify(test_data[i])+")"+" > "+kolobok(test_data[i]));
-        } else if (i!=6 && i!=7 && i!=8 && kolobok(test_data[i])==="incorrect"){          
             log.info("Тест №"+(i+1)+" из "+test_data.length+" ПРОЙДЕН "+" ("+JSON.stringify(test_data[i])+")"+" > "+kolobok(test_data[i]));
-            //console.log("Тест №"+(i+1)+" из "+test_data.length+" ПРОЙДЕН "+" ("+JSON.stringify(test_data[i])+")"+" > "+kolobok(test_data[i]));
+        } else if (i!=6 && i!=7 && i!=8 && kolobok(test_data[i])==="incorrect"){          
+            log.warn("Тест №"+(i+1)+" из "+test_data.length+" ПРОЙДЕН "+" ("+JSON.stringify(test_data[i])+")"+" > "+kolobok(test_data[i]));
         } else {
-            log.warn("Тест №"+(i+1)+" из "+test_data.length+" НЕ пройден "+" ("+JSON.stringify(test_data[i])+")"+" > "+kolobok(test_data[i]));
-            //console.log("Тест №"+(i+1)+" из "+test_data.length+" НЕ пройден "+" ("+JSON.stringify(test_data[i])+")"+" > "+kolobok(test_data[i]));
+            log.error("Тест №"+(i+1)+" из "+test_data.length+" НЕ пройден "+" ("+JSON.stringify(test_data[i])+")"+" > "+kolobok(test_data[i]));
         }
 	}
 	if (c != test_data.length) {
-        log.warn("error: test "+(c+1)+" failed");
+        log.error("error: test "+(c+1)+" failed");
     }
 }
 
-//тест нового года
 function test_newYear() {
-	//console.log("Возвращаемые функцией newYear значения:");
-    log.info("Возвращаемые функцией newYear значения:");
+    log.info("\n Возвращаемые функцией newYear значения:");
     var c = 0;
 	for (var i = 0; i < test_data.length; i++) {
         c++;
         if ((i==9 && newYear(test_data[i])==="\"Дед Мороз! Дед Мороз! Дед Мороз!\"") || (i==10 && newYear(test_data[i])==="\"Снегурочка! Снегурочка! Снегурочка!\"")) {
-            log.warn("Тест №"+(i+1)+" из "+test_data.length+" ПРОЙДЕН "+" ("+JSON.stringify(test_data[i])+")"+" > "+newYear(test_data[i]));
-            //console.log("Тест №"+(i+1)+" из "+test_data.length+" НЕ пройден "+" ("+JSON.stringify(test_data[i])+")"+" > "+newYear(test_data[i]));
-        } else if (i!=9 && i!=10 && newYear(test_data[i])==="incorrect"){
             log.info("Тест №"+(i+1)+" из "+test_data.length+" ПРОЙДЕН "+" ("+JSON.stringify(test_data[i])+")"+" > "+newYear(test_data[i]));
-            //console.log("Тест №"+(i+1)+" из "+test_data.length+" ПРОЙДЕН "+" ("+JSON.stringify(test_data[i])+")"+" > "+newYear(test_data[i]));
+        } else if (i!=9 && i!=10 && newYear(test_data[i])==="incorrect"){
+            log.warn("Тест №"+(i+1)+" из "+test_data.length+" ПРОЙДЕН "+" ("+JSON.stringify(test_data[i])+")"+" > "+newYear(test_data[i]));
         } else {
-            log.warn("Тест №"+(i+1)+" из "+test_data.length+" НЕ пройден "+" ("+JSON.stringify(test_data[i])+")"+" > "+newYear(test_data[i]));
-            //console.log("Тест №"+(i+1)+" из "+test_data.length+" НЕ пройден "+" ("+JSON.stringify(test_data[i])+")"+" > "+newYear(test_data[i])); 
+            log.error("Тест №"+(i+1)+" из "+test_data.length+" НЕ пройден "+" ("+JSON.stringify(test_data[i])+")"+" > "+newYear(test_data[i]));
         }
 	}
 	if (c != test_data.length) {
-        log.warn("error: test "+(c+1)+" failed");         
+        log.error("error: test "+(c+1)+" failed");         
     }
 }
 
