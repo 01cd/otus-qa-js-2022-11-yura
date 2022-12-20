@@ -1,31 +1,27 @@
 function kolobok(name) {
-    let ss;
-    if (typeof(name) == 'string') {
-        switch (name) {
-            case "дедушка":
-                ss="Я от дедушки ушёл";
-                break;
-            case "заяц":
-                ss="";
-                break;
-            case "лиса":
-                ss="Меня съели";
-                break;
-            default:
-                ss="incorrect";
-        }
-    } else {
-        ss="incorrect"; //incorrect type
+    if (typeof(name) !== "string") {
+        throw new Error(`${JSON.stringify(name)} -> is not a string!`);
     }
-    return ss;
+    switch (name) {
+        case "дедушка":
+            return "Я от дедушки ушёл";
+        case "заяц":
+            return "";
+        case "лиса":
+            return "Меня съели";
+        default:
+            return "incorrect";
+    }
 }
 
 function newYear(name) {
+    if (typeof(name) !== "string") {
+        throw new Error(`${JSON.stringify(name)} -> is not a string!`);
+    }
     if (name == "Дед Мороз" || name == "Снегурочка") {
         return `"${name}! ${name}! ${name}!"`;
-    } else {
-        return "incorrect" ;
     }
+        return "incorrect" ;
 }
 
 export {kolobok, newYear}

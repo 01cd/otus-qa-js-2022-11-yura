@@ -7,7 +7,7 @@ function test(log, func, data, index) {
             if (result == eleOfArray[index]) {
                 log.info(`Тест №${i} ПРОЙДЕН (${eleOfArray[0]}) -> ${result}`)
             } else {
-                log.info(`Тест №${i} НЕ ПРОЙДЕН (${eleOfArray[0]}) -> ${result}`)
+                log.warn(`Тест №${i} НЕ ПРОЙДЕН (${eleOfArray[0]}) -> ${result}`)
             }
         } catch (error) {
             log.fatal(`Тест №${i} УПАЛ: ${error}`)
