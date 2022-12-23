@@ -65,11 +65,11 @@ function prepareTestData() {
 	arr.push([null]);			// №15
 	arr[14].push(0);
 	let b = {};
-	for (var i=0; i<50; i++) {
+	for (var i=0; i<10000; i++) {
 		b["key"+i]=i;  
 	}
 	arr.push([b]);				// №16
-	arr[15].push(1225);
+	arr[15].push(49995000);
 	let mb = "я 1 МиБ txt ";
 	for (var i = 0; i < 16; i++) {
 		mb=mb+mb
@@ -78,5 +78,13 @@ function prepareTestData() {
 	arr[16].push(0);
 	return arr
 }
+//посчитать сумму для сгенерированного объекта
+/*
+function fn(min, max, step) {
+  var n = (max - min) / step | 0;
+  return (min + n * step / 2) * ++n;
+};
+console.log(fn(0,9999,1));
+*/
 
 export {prepareTestData}

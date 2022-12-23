@@ -13,6 +13,7 @@ function sumObj(obj,add) {
 		throw new Error(`${JSON.stringify(obj)} -> is not a object!`);
 	}
     let sum = 0;
+    let time = null;
     switch (add) {
         case "keys":
 		Object.keys(obj).forEach(function(key){
@@ -24,19 +25,22 @@ function sumObj(obj,add) {
       			assert(obj[key] < 10000, "points should not be over 9999!");
 			sum=sum+obj[key]
 		})
-		return sum
+		time = new Date();
+		return [sum, time]
         case "map":
                 let m = 0;
-		return Object.values(obj).map(function(val) {
+		sum = Object.values(obj).map(function(val) {
 			if (typeof(val)!=="number" || isNaN(val))  {
     				throw new Error(`value ${JSON.stringify(val)} -> is not a number`);
 			}
       			assert.strictEqual(val, parseInt(val),"points should be integer!");
       			assert(val >= 0, "points should be positive!");
       			assert(val < 10000, "points should not be over 9999!");
-			return m=m+val})[Object.values(obj).length-1]				
+			return m=m+val})[Object.values(obj).length-1]
+		time = new Date();
+		return [sum, time]
         case "redu":
-            	return Object.values(obj).reduce(function(acc, val) {
+            	sum = Object.values(obj).reduce(function(acc, val) {
 			if (typeof(val)!=="number" || isNaN(val))  {
 				throw new Error(`value ${JSON.stringify(val)} -> is not a number`);
 			}
@@ -44,6 +48,8 @@ function sumObj(obj,add) {
       			assert(val >= 0, "points should be positive!");
       			assert(val < 10000, "points should not be over 9999!");
 			return acc + val}, 0)
+		time = new Date();
+		return [sum, time]
         default:
 		for (var prop in obj) {
 			if (typeof(obj[prop])!=="number" || isNaN(obj[prop]))  {
@@ -53,8 +59,9 @@ function sumObj(obj,add) {
       			assert(obj[prop] >= 0, "points should be positive!");
       			assert(obj[prop] < 10000, "points should not be over 9999!");
 			sum=sum+obj[prop]
-			}	
-		return sum
+			}
+		time = new Date();
+		return [sum, time]
 	}
 }
 
