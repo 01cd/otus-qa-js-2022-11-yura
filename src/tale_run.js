@@ -3,8 +3,8 @@ import {createWriteStream} from 'fs'
 import PrettyStream from 'bunyan-prettystream';
 import bunyan from 'bunyan'
 import {kolobok, newYear} from './tale.js'
-import {test} from './tester.js'
-import {prepareTestData} from './data.js'
+import {test} from './tester3.js'
+import {prepareTestData} from './data3.js'
 
 //данные в тесты
 const test_data = prepareTestData()
