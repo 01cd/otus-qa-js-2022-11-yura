@@ -34,7 +34,7 @@ test('#3_post_user_new', async function regUser() {
     expect(response.data.username).toBe(dataObj.new_user.data.userName);
     expect(response.data.userID).toHaveLength(36);
     dataObj.del_new_user.url=dataObj.del_new_user.url+response.data.userID;
-    console.log(`delete url: ${JSON.stringify(dataObj.del_new_user.url)}`);
+    console.log(`new user id: ${JSON.stringify(response.data.userID)}`);
 });
 
 // вместо 400 Bad Request (Error) почему-то отдаёт 200 OK
@@ -56,13 +56,13 @@ test('5#_post_generate_token_ok', async function getToken() {
     expect(response.statusText).toBe("OK");
     expect(response.data.status).toBe("Success");
     expect(response.data.result).toBe("User authorized successfully.");
-    dataObj.del_new_user.url=dataObj.del_new_user.url + "?access_token=" + response.data.token;
+    dataObj.del_new_user.headers.Authorization="Bearer " + response.data.token;
 });
-// снова баг в сайте: отдаёт 200, но пользователь не удаляется
+
 test('delete_new_user(cleanup)', async function delUser() {
   try {
     const response = await axios(dataObj.del_new_user);
-    console.log(`delete new: ${JSON.stringify(dataObj.userID)} | ${response.data}`);
+    console.log(`delete new user url: ${JSON.stringify(dataObj.del_new_user.url)} | ${JSON.stringify(response.data)}`);
     expect(response.status).toBe(200);
     expect(response.statusText).toBe("OK");    
   } catch (error) {

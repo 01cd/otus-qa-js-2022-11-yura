@@ -54,6 +54,9 @@ export const dataObj = {
         data: {
             userName: name,
             password: password
+        },
+        headers: {
+            Authorization: ""
         }
     },
      err_token: {method: 'post',
