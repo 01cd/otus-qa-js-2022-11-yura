@@ -1,3 +1,5 @@
+const crypto = require('crypto');
+
 export function login_gena(prefix, min, max) {
     return prefix+Math.floor(Math.random()*(max-min)+min)
 }
@@ -32,3 +34,8 @@ export function password_gena(lvl,length) {
     return result.substr(0, length);
 }
 
+export function uuid_gena() {
+    let u = Date.now().toString(16) + Math.random().toString(16) + '0'.repeat(16);
+    let uuid = [u.substr(0,8), u.substr(8,4), '4000-8' + u.substr(13,3), u.substr(16,12)].join('-');
+    return uuid
+}

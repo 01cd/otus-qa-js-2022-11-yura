@@ -1,13 +1,6 @@
 import axios from 'axios';
-import {login_gena, password_gena} from '../fixtures/gens.js';
+import {login_gena, password_gena, uuid_gena} from '../fixtures/gens.js';
 import {config} from '../config/config.js';
-const crypto = require('crypto');
-
-function uuidv4() {
-    let u = Date.now().toString(16) + Math.random().toString(16) + '0'.repeat(16);
-    let uuid = [u.substr(0,8), u.substr(8,4), '4000-8' + u.substr(13,3), u.substr(16,12)].join('-');
-    return uuid
-}
     
 let token = false;    
 
@@ -50,14 +43,14 @@ user.token = async function (data) {
 };
 user.delete = async function (data,userID,token) { // если не подали данные, то генерируем новые, чтобы получить ошибку по авторизации
     let method = 'delete';
-    userID = (userID) ? userID : uuidv4();
+    userID = (userID) ? userID : uuid_gena();
     let getToken = async function (data) {
         if (!token && data) {
             token = await user.token(data);
             console.log("del_token: "+token.data.token);
             return token.data.token        
         } else if (!token && !data) {
-            return uuidv4()
+            return uuid_gena()
         }
         return token    
     };

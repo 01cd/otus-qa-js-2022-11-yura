@@ -163,7 +163,7 @@ test('#4_test_user_creation', async function regUser() {
     console.log(`new user data: ${JSON.stringify(content)}`);    
     await write()
   } catch (error) {
-    //console.error(error);
+    console.error(error);
     console.error("User not created! Try again")
     expect(error.response.status).toBe(400);
     expect(error.response.statusText).toBe("Bad Request");
