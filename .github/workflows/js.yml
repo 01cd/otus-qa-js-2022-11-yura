@@ -44,10 +44,7 @@ jobs:
         run: npm run test:coverage
         continue-on-error: true
         env:
-          BASE_URL: ${{ secrets.BASE_URL }}
-          USERNAME: ${{ secrets.USERNAME }}
-          PASSWORD: ${{ secrets.PASSWORD }}
-          USER_ID: ${{ secrets.USER_ID }}
+          credentials: ${{ secrets.CREDENTIALS }}          
 
       # Выгрузка отчета
       - name: Upload report
