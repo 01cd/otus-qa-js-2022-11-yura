@@ -1,0 +1,85 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: CI API Bookstore
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "master" ]
+  schedule:
+    - cron: "0 12 * * 5"
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-20.04
+    permissions:
+      contents: read
+      deployments: write
+    strategy:
+      matrix:
+        node-version: [ 14.x ]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: ./num10/package-lock.json
+
+      # Установка зависимостей из package.json
+      - name: Install deps
+        run: npm ci
+
+      # Запуск build из package.json (если он есть)
+      - name: Run build
+        run: npm run build --if-present
+
+      # Запуск тестов
+      - name: Run tests
+        run: npm run test:coverage
+        continue-on-error: true
+        env:
+          credentials: ${{ secrets.CREDENTIALS }}
+
+      # Выгрузка отчета
+      - name: Upload report
+        uses: actions/upload-artifact@v3
+        with:
+          name: report
+          if-no-files-found: error
+          path: ./report-jest-html
+
+      # Выгрузка  покрытия
+      - name: Upload coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage
+          if-no-files-found: error
+          path: ./coverage
+
+      # Отправка нотификации в Telegram
+      - name: Send notification to Telegram
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            Workflow: ${{ github.workflow }}
+            Job: ${{ github.job }}
+            Run attemp: ${{ github.run_attempt }}
+            Event name: ${{ github.event_name }}
+            Ref name: ${{ github.ref_name }}
+            Action: ${{ github.action }}
+
+      # Публикация отчета в Pages
+      - name: Publish to Github Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: report-jest-html
+          clean: true
+          token: ${{ secrets.TOKEN }}
