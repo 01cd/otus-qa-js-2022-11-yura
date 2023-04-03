@@ -20,7 +20,7 @@ jobs:
       deployments: write
     strategy:
       matrix:
-        node-version: [ 14 ]
+        node-version: [ 14.x ]
 
     steps:
       - uses: actions/checkout@v3
@@ -28,23 +28,24 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          #cache: 'npm'
-          #cache-dependency-path: ./num10/package-lock.json   
+          cache: 'npm'
+          cache-dependency-path: ./num10/package-lock.json
 
       # Установка зависимостей из package.json
       - name: Install deps
+        working-directory: ./num10/
         run: npm ci
-
       # Запуск build из package.json (если он есть)
       - name: Run build
+        working-directory: ./num10/
         run: npm run build --if-present
-
       # Запуск тестов
       - name: Run tests
-        run: npm run test:coverage
+        working-directory: ./num10/
+        run: npm run coverage_pattern_api
         continue-on-error: true
         env:
-          credentials: ${{ secrets.CREDENTIALS }}          
+          credentials: ${{ secrets.CREDENTIALS }}
 
       # Выгрузка отчета
       - name: Upload report
@@ -52,7 +53,7 @@ jobs:
         with:
           name: report
           if-no-files-found: error
-          path: ./report-jest-html
+          path: ./num10/report-jest-html
 
       # Выгрузка  покрытия
       - name: Upload coverage
@@ -60,7 +61,7 @@ jobs:
         with:
           name: coverage
           if-no-files-found: error
-          path: ./coverage
+          path: ./num10/coverage
 
       # Отправка нотификации в Telegram
       - name: Send notification to Telegram
@@ -75,12 +76,11 @@ jobs:
             Event name: ${{ github.event_name }}
             Ref name: ${{ github.ref_name }}
             Action: ${{ github.action }}
-            
+
       # Публикация отчета в Pages
       - name: Publish to Github Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: report-jest-html
+          folder: ./num10/report-jest-html
           clean: true
-          token: ${{ secrets.TOKEN }}       
-          
+          token: ${{ secrets.TOKEN }}
