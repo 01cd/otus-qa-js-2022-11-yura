@@ -33,15 +33,16 @@ jobs:
 
       # Установка зависимостей из package.json
       - name: Install deps
-        run: npm ci
-
+      - run: npm ci
+        working-directory: ./num10/
       # Запуск build из package.json (если он есть)
       - name: Run build
-        run: npm run build --if-present
-
+      - run: npm run build --if-present
+        working-directory: ./num10/
       # Запуск тестов
       - name: Run tests
-        run: npm run test:coverage
+      - run: npm run test:coverage
+        working-directory: ./num10/
         continue-on-error: true
         env:
           credentials: ${{ secrets.CREDENTIALS }}
@@ -52,7 +53,7 @@ jobs:
         with:
           name: report
           if-no-files-found: error
-          path: ./report-jest-html
+          path: ./num10/report-jest-html
 
       # Выгрузка  покрытия
       - name: Upload coverage
@@ -60,7 +61,7 @@ jobs:
         with:
           name: coverage
           if-no-files-found: error
-          path: ./coverage
+          path: ./num10/coverage
 
       # Отправка нотификации в Telegram
       - name: Send notification to Telegram
@@ -80,6 +81,6 @@ jobs:
       - name: Publish to Github Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: report-jest-html
+          folder: ./num10/report-jest-html
           clean: true
           token: ${{ secrets.TOKEN }}
