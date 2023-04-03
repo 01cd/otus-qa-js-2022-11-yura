@@ -1,7 +1,7 @@
 {
   "name": "pattern-api",
   "version": "1.0.0",
-  "description": "homework #8",
+  "description": "homework #10",
   "main": "index.js",
   "type": "module",
   "scripts": {
