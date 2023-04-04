@@ -79,7 +79,7 @@ jobs:
             Run attemp: ${{ github.run_attempt }}
             Event name: ${{ github.event_name }}
             Ref name: ${{ github.ref_name }}
-            Action: ${{ github.action }}
+            Это сообщение от github actions
 
       # Публикация отчета в Pages
       - name: Publish to Github Pages
