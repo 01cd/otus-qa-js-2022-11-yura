@@ -9,7 +9,7 @@ const user = {
         let toSend={};
         toSend.method = (method) ? method : "post";
         toSend.url = config.url + ((url) ? url : "Account/v1/Authorized");
-        toSend.data = (data) ? data : {userName: config.user, password: config.password};
+        toSend.data = (data) ? data : {"userName": config.user, "password": config.password};
         toSend.headers = (headers) ? headers : {'Accept': '*/*', 'Content-Type': 'application/json; charset=utf-8'};
         console.log("url: "+toSend.url)
         console.log("credentials: "+JSON.stringify(toSend.data))
@@ -20,14 +20,14 @@ const user = {
 user.create = async function (data) { //из-за багов в сайте может не всегда создаваться (например, не воспринимает '~' или '№' как символ в пароле)
     let method = 'post';
     let url = 'Account/v1/User';
-    data = (data) ? data : {userName: login_gena("userN",666,66666), password: password_gena(4,10)};
+    data = (data) ? data : {"userName": login_gena("userN",666,66666), "password": password_gena(4,10)};
     const res = await this.send(method, url, data);
     return [res,data]
 };    
 user.auth = async function (data) {
     let method = 'post';
     let url = 'Account/v1/Authorized';
-    data = (data) ? data : {userName: config.user, password: config.password};
+    data = (data) ? data : {"userName": config.user, "password": config.password};
     const res = await this.send(method, url, data);
     return res
 }; 
@@ -37,7 +37,7 @@ user.token = async function (data) {
     }
     let method = 'post';
     let url = 'Account/v1/GenerateToken';
-    data = (data) ? data : {userName: config.user, password: config.password};
+    data = (data) ? data : {"userName": config.user, "password": config.password};
     const res = await this.send(method, url, data);
     return res
 };
@@ -55,7 +55,7 @@ user.delete = async function (data,userID,token) { // если не подали
         return token    
     };
     let url = 'Account/v1/User/'+userID;
-    data = (data) ? data : {userName: login_gena("userN",666,66666), password: password_gena(4,10)};
+    data = (data) ? data : {"userName": login_gena("userN",666,66666), "password": password_gena(4,10)};
     let headers = {'Accept': "*/*", 'content-type': 'application/json; charset=utf-8', 'Authorization': "Bearer " + await getToken(data)};
     const res = await this.send(method, url, data, headers);
     return res
@@ -73,7 +73,7 @@ user.info = async function (data,userID,token) {
         return token    
     };
     let url = 'Account/v1/User/'+userID;
-    data = (data) ? data : {userName: config.user, password: config.password};
+    data = (data) ? data : {"userName": config.user, "password": config.password};
     let headers = {'Accept': "*/*", 'content-type': 'application/json; charset=utf-8','Authorization':"Bearer " + await getToken(data)}
     const res = await this.send(method, url, data , headers);
     return res
