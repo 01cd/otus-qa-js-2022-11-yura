@@ -31,10 +31,13 @@ jobs:
           #cache: 'npm'
           #cache-dependency-path: ./num10/package-lock.json
 
-      # Установка зависимостей из package.json
       - name: Install deps
         working-directory: ./num10/
         run: npm install
+
+      # Установка зависимостей из package.json
+      - name: Run CI
+        working-directory: ./num10/
         run: npm ci
       # Запуск build из package.json (если он есть)
       - name: Run build
