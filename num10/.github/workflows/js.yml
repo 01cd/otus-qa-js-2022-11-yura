@@ -35,7 +35,7 @@ jobs:
       # Установка лишних зависимостей, без которых валится npm ci
       - name: Install deps
         working-directory: ./num10/
-        run: npm install
+        run: npm install -g npm@latest
 
       # Установка зависимостей из package.json
       - name: Run CI
