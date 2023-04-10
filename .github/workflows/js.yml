@@ -41,9 +41,11 @@ jobs:
       - name: cache node_modules
         uses: actions/cache@v3
         with:
-          key: ${{ runner.os }}-${{ hashFiles('**/num10/package-lock.json') }}
+          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
           path: |
             node_modules
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       # Установка зависимостей из package.json
       - name: Install dependencies
