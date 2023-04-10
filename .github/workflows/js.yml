@@ -32,19 +32,18 @@ jobs:
           #cache: 'npm'
           #cache-dependency-path: ./num10/package-lock.json
 
-      # Установка нового npm
-      - name: Install latest npm
-        working-directory: ./num10/
-        run: npm install -g npm@latest
-
       # Кеширование модулей
       - name: cache node_modules
         uses: actions/cache@v3
         with:
-          path: '~/.npm'
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          path: |
+            '~/.npm'
+
+      # Установка нового npm
+      - name: Install latest npm
+        working-directory: ./num10/
+        run: npm install -g npm@latest
 
       # Установка зависимостей из package.json
       - name: Install dependencies
