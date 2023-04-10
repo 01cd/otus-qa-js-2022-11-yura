@@ -34,7 +34,7 @@ jobs:
 
       # Кеширование модулей
       - name: cache node_modules
-        uses: actions/cache@v3
+        uses: actions/cache@v2
         with:
           key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
           path: |
