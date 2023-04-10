@@ -7,7 +7,7 @@ export default {
 	"default",
 	["jest-html-reporters", {
 	    "publicPath": "./report-jest-html",
-	    "filename": "report.html",
+	    "filename": "index.html",
 	    "pageTitle": "Test Report"
 	}]
     ]
