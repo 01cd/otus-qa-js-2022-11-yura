@@ -30,15 +30,22 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: ./num10/package-lock.json
+          cache-dependency-path: '**/package-lock.json'
 
-      # Установка лишних зависимостей, без которых валится npm ci
-      - name: Install deps
+      # Установка нового npm
+      - name: Install latest npm
         working-directory: ./num10/
         run: npm install -g npm@latest
 
+      # Кеширование модулей
+      - name: cache node_modules
+        uses: actions/cache@v2
+        with:
+          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          path: ./node_modules
+
       # Установка зависимостей из package.json
-      - name: Run CI
+      - name: Install dependencies
         working-directory: ./num10/
         run: npm ci
 
@@ -86,7 +93,7 @@ jobs:
             Run attemp: ${{ github.run_attempt }}
             Event name: ${{ github.event_name }}
             Ref name: ${{ github.ref_name }}
-            Test report: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/report.html
+            Test report: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
             Это сообщение от github actions
 
       # Публикация отчета в Pages
