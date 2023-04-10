@@ -29,16 +29,16 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          #cache: 'npm'
-          #cache-dependency-path: ./num10/package-lock.json
+          cache: 'npm'
+          cache-dependency-path: ./num10/package-lock.json
 
       # Кеширование модулей
-      - name: cache node_modules
-        uses: actions/cache@v2
-        with:
-          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
-          path: |
-            '~/.npm'
+      #- name: cache node_modules
+    #    uses: actions/cache@v2
+    #    with:
+    #      key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+    #      path: |
+    #        '~/.npm'
 
       # Установка нового npm
       - name: Install latest npm
