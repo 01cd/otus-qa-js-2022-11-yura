@@ -29,10 +29,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-          cache-dependency-path: ./num10/package-lock.json
+          #cache: 'npm'
+          #cache-dependency-path: ./num10/package-lock.json
 
-      # Установка лишних зависимостей, без которых валится npm ci
+      # Установка нового npm
       - name: Install deps
         working-directory: ./num10/
         run: npm install -g npm@latest
