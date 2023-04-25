@@ -1,0 +1,89 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Project
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'project/**'
+    branches: [ "develop" ]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-20.04
+    permissions:
+      contents: read
+      deployments: write
+    strategy:
+      matrix:
+        node-version: [ 14.x ]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+      # Установка Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      # Установка нового npm
+      - name: Install latest npm
+        working-directory: ./project/
+        run: npm install -g npm@latest
+
+      # Кеширование модулей
+      - name: cache node_modules
+        uses: actions/cache@v3
+        with:
+          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          path: ./node_modules
+
+      # Установка зависимостей из package.json
+      - name: Install dependencies
+        working-directory: ./project/
+        run: npm ci
+
+      # Запуск тестов
+      - name: Run tests
+        working-directory: ./project/
+        run: npm run test
+        continue-on-error: true
+        env:
+          detectLNG: ${{ secrets.LNGDETECT }}
+
+      # Выгрузка отчета
+      - name: Upload report
+        uses: actions/upload-artifact@v3
+        with:
+          name: report
+          if-no-files-found: error
+          path: ./project/report-jest-html
+          retention-days: 10
+
+      # Отправка нотификации в Telegram
+      - name: Send notification to Telegram
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ${{ github.actor }} created commit to repository: ${{ github.repository }}
+            Commit: https://github.com/${{ github.repository }}/commit/${{github.sha}}
+            Run:  https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            Workflow: ${{ github.workflow }}
+            Run attemp: ${{ github.run_attempt }}
+            Ref name: ${{ github.ref_name }}
+            Test report: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+            Это сообщение от github actions
+
+      # Публикация отчета в Pages
+      - name: Publish to Github Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: ./project/report-jest-html
+          clean: true
+          token: ${{ secrets.TOKEN }}
