@@ -4,12 +4,12 @@
 name: CI API Bookstore
 on:
   workflow_dispatch:
-  #push:
-  #  branches: [ "develop" ]
+  push:
+    branches: [ "develop" ]
   pull_request:
     branches: [ "master" ]
-  #schedule:
-  #  - cron: "0 12 * * 5" # в 12 по пятницам
+  schedule:
+    - cron: "0 12 * * 5" # в 12 по пятницам
 
 jobs:
   build:
