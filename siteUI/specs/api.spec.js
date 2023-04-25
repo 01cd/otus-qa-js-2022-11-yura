@@ -4,14 +4,7 @@ import {config} from '../framework/config/config.js';
 import {configPW} from '../framework/config/PlaywrightConfig.js';
 let page, browser, context, title, newtoken
 
-//Функция для получения текущей даты UTC в формате yyyy-mm-dd
-function getCurrentDate () {
-    let currentDate = new Date().toISOString().substr(0, 10);
-    //console.log(currentDate); 
-    return currentDate
-}
-
-//Проверка авторизации
+//Проверка сайта через браузер
 describe('#1_site_UI-tests', () => {
     //Запускаем перед каждым тестом браузер и создаём новую вкладку
     beforeEach(async function() {

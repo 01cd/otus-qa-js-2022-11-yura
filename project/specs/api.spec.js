@@ -36,7 +36,9 @@ describe('#1_get_authentication_token', () => {
     //Переходим на страницу авторизации, вводим данные, отправляем, получаем перенаправление на страницу личного кабинета, откуда забираем токен
     test('sign_in_and_redirect_to_token_page', async function sign_in_and_get_token() {
         try { 
-            await page.goto(configPW.mainPage + configPW.loginPage);
+            await page.goto(configPW.mainPage);
+            await page.locator(configPW.selectors.logInLink).click();
+            await page.waitForLoadState('domcontentloaded');
             await page.locator(configPW.selectors.login).fill(config.email);
             await page.locator(configPW.selectors.password).fill(config.password);
             await page.click(configPW.selectors.loginBtn);

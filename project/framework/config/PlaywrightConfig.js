@@ -9,8 +9,8 @@ export const configPW = {
         slowMo: 500
     },
     mainPage: config.url,
-    loginPage: "/users/sign_in",
     selectors: {
+        logInLink: 'a[href^="/users/sign_in"]',
         login: 'input[id=user_email]', 
         password: 'input[id=user_password]',
         loginBtn: 'input[type=submit]',
