@@ -2,11 +2,11 @@
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
 name: Project
-on: [push, pull_request]
-#  workflow_dispatch:
-#  push:
-#    paths:
-#      - 'project/**'
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'project/**'
 #    branches: [ "develop" ]
 
 jobs:
