@@ -5,10 +5,11 @@ name: Project
 on:
   workflow_dispatch:
   push:
+    branches: 
+      - 'develop'
     paths:
       - 'project/**'
-    branches: [ "develop" ]
-
+    
 jobs:
   build:
     name: Build
